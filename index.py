@@ -20,7 +20,17 @@ def resize_image(image, max_width=400):
 def main():
     st.set_page_config(layout="wide")
     
-    st.markdown("<h1 style='text-align: center;'>이미지 압축기</h1>", unsafe_allow_html=True)
+    # 새로운 스타일의 타이틀
+    st.markdown("""
+    <h1 style='text-align: center; font-size: 2.5em;'>
+        <span style='color: black;'>무료 사진</span>
+        <span style='color: #FF9B50;'>크기</span>
+        <span style='color: #E15FED;'>조절하기</span>
+    </h1>
+    <p style='text-align: center; font-size: 1.2em; color: #666;'>
+        쉽고 빠른 무료 온라인 사진 크기 조절기로 사진의 크기를 바꿀 수 있습니다.
+    </p>
+    """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1,1.5,1])
     with col2:
@@ -39,18 +49,15 @@ def main():
             st.subheader("압축 설정")
             quality = st.slider("품질", 0, 100, 76, 1, format="%d%%")
 
-            # 세션 상태를 사용하여 이전 품질 설정을 저장
             if 'prev_quality' not in st.session_state:
                 st.session_state.prev_quality = quality
 
-            # 품질이 변경되었는지 확인
             quality_changed = st.session_state.prev_quality != quality
 
             if quality_changed:
                 with st.spinner('이미지 압축 중...'):
                     compressed_image = compress_image(uploaded_file, quality)
                     
-                    # 파일 크기 계산
                     original_size = uploaded_file.size
                     compressed_byte_arr = io.BytesIO()
                     compressed_image.save(compressed_byte_arr, format=compressed_image.format)
@@ -61,11 +68,9 @@ def main():
                     st.session_state.compressed_byte_arr = compressed_byte_arr
                     st.session_state.original_size = original_size
 
-                    # 압축된 이미지로 미리보기 업데이트
                     preview_compressed = resize_image(compressed_image)
                     image_container.image(preview_compressed, use_column_width=True, caption="압축된 이미지 미리보기")
 
-            # 압축 결과 표시
             if 'compressed_size' in st.session_state:
                 original_size = st.session_state.original_size
                 compressed_size = st.session_state.compressed_size
@@ -74,7 +79,6 @@ def main():
                 st.write(f"압축 크기: {compressed_size / 1024:.2f} KB")
                 st.write(f"압축률: {(1 - compressed_size / original_size) * 100:.2f}%")
 
-                # 다운로드 버튼
                 st.download_button(
                     label="압축된 이미지 다운로드",
                     data=st.session_state.compressed_byte_arr.getvalue(),
@@ -82,7 +86,6 @@ def main():
                     mime=f"image/{st.session_state.compressed_image.format.lower()}"
                 )
 
-            # 현재 품질을 이전 품질로 업데이트
             st.session_state.prev_quality = quality
 
 if __name__ == "__main__":
