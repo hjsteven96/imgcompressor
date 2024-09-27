@@ -20,14 +20,14 @@ def resize_image(image, max_width=400):
 def main():
     st.set_page_config(layout="wide")
     
-    # 새로운 스타일의 타이틀
+    # 타이틀과 부제 사이 간격 최소화
     st.markdown("""
-    <h1 style='text-align: center; font-size: 2.5em; margin-bottom: 1.5em;'>
+    <h1 style='text-align: center; font-size: 2.5em; margin-bottom: 0.2em;'>
         <span style='color: black;'>무료 사진</span>
         <span style='color: #FF9B50;'>크기</span>
         <span style='color: #E15FED;'>조절하기</span>
     </h1>
-    <p style='text-align: center; font-size: 1.2em; color: #666; margin-bottom: 2em;'>
+    <p style='text-align: center; font-size: 1.2em; color: #666; margin-top: 0; margin-bottom: 2em;'>
         쉽고 빠른 무료 온라인 사진 크기 조절기로 사진의 크기를 바꿀 수 있습니다.
     </p>
     """, unsafe_allow_html=True)
