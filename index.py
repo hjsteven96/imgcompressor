@@ -18,7 +18,10 @@ def main():
     st.set_page_config(layout="wide")
     st.title("이미지 압축기")
 
-    uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "jpeg", "png"])
+    # 이미지 첨부 영역을 중앙 정렬하고 가로 길이 축소
+    col1, col2, col3 = st.columns([1,1,1])
+    with col2:
+        uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
         col_image, col_control = st.columns([2, 1])
@@ -28,24 +31,31 @@ def main():
             preview_image = resize_image(original_image)
             image_container = st.empty()
             image_container.image(preview_image, use_column_width=True, caption="이미지 미리보기 (50% 크기)")
+            
+            # 스피너를 위한 별도의 컨테이너
+            spinner_container = st.empty()
 
         with col_control:
             st.subheader("압축 설정")
             quality = st.slider("품질", 0, 100, 76, 1, format="%d%%")
             
             # 압축 실행 및 결과 표시
-            with st.spinner('이미지 압축 중...'):
-                compressed_image = compress_image(uploaded_file, quality)
-                
-                # 원본과 압축 후 파일 크기 비교
-                original_size = uploaded_file.size
-                compressed_byte_arr = io.BytesIO()
-                compressed_image.save(compressed_byte_arr, format=compressed_image.format)
-                compressed_size = len(compressed_byte_arr.getvalue())
+            spinner_container.spinner('이미지 압축 중...')
+            
+            compressed_image = compress_image(uploaded_file, quality)
+            
+            # 원본과 압축 후 파일 크기 비교
+            original_size = uploaded_file.size
+            compressed_byte_arr = io.BytesIO()
+            compressed_image.save(compressed_byte_arr, format=compressed_image.format)
+            compressed_size = len(compressed_byte_arr.getvalue())
 
-                # 압축된 이미지 미리보기 (50% 크기)
-                preview_compressed = resize_image(compressed_image)
-                image_container.image(preview_compressed, use_column_width=True, caption="압축된 이미지 미리보기 (50% 크기)")
+            # 압축된 이미지 미리보기 (50% 크기)
+            preview_compressed = resize_image(compressed_image)
+            image_container.image(preview_compressed, use_column_width=True, caption="압축된 이미지 미리보기 (50% 크기)")
+
+            # 스피너 제거
+            spinner_container.empty()
 
             st.write(f"원래 크기: {original_size / 1024:.2f} KB")
             st.write(f"압축 크기: {compressed_size / 1024:.2f} KB")
