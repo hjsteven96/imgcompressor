@@ -20,14 +20,14 @@ def resize_image(image, max_width=400):
 def main():
     st.set_page_config(layout="wide")
     
-    # 타이틀과 부제 사이 간격 최소화
+    # 타이틀과 부제 사이 간격 더 축소
     st.markdown("""
-    <h1 style='text-align: center; font-size: 2.5em; margin-bottom: 0.2em;'>
+    <h1 style='text-align: center; font-size: 2.5em; margin-bottom: 0;'>
         <span style='color: black;'>무료 사진</span>
         <span style='color: #FF9B50;'>크기</span>
         <span style='color: #E15FED;'>조절하기</span>
     </h1>
-    <p style='text-align: center; font-size: 1.2em; color: #666; margin-top: 0; margin-bottom: 2em;'>
+    <p style='text-align: center; font-size: 1.2em; color: #666; margin-top: 0.1em; margin-bottom: 2em;'>
         쉽고 빠른 무료 온라인 사진 크기 조절기로 사진의 크기를 바꿀 수 있습니다.
     </p>
     """, unsafe_allow_html=True)
@@ -81,13 +81,22 @@ def main():
                 st.write(f"압축률: {(1 - compressed_size / original_size) * 100:.2f}%")
 
                 st.markdown("<div style='margin-top: 2em;'></div>", unsafe_allow_html=True)
+                
+                # 다운로드 버튼 스타일 적용
+                st.markdown("""
+                <style>
+                div.stButton > button:first-child {
+                    background-color: #000000;
+                    color: white;
+                }
+                </style>""", unsafe_allow_html=True)
+                
                 st.download_button(
                     label="압축된 이미지 다운로드",
                     data=st.session_state.compressed_byte_arr.getvalue(),
                     file_name=f"compressed_{uploaded_file.name}",
                     mime=f"image/{st.session_state.compressed_image.format.lower()}",
                     use_container_width=True,
-                    type="secondary"
                 )
 
             st.session_state.prev_quality = quality
