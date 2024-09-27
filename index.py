@@ -9,10 +9,10 @@ def compress_image(image, quality):
     output.seek(0)
     return Image.open(output)
 
-def resize_image(image, max_width=800, max_height=600):
+def resize_image(image, max_width=400):  # Changed max_width to 400 (half of 800)
     width, height = image.size
-    if width > max_width or height > max_height:
-        ratio = min(max_width / width, max_height / height)
+    if width > max_width:
+        ratio = max_width / width
         new_size = (int(width * ratio), int(height * ratio))
         return image.resize(new_size, Image.LANCZOS)
     return image
@@ -43,6 +43,7 @@ def main():
             
             # 압축 실행 및 결과 표시
             if st.button("이미지 압축"):
+                # 로딩 스피너를 표시하면서 이미지 압축 진행
                 with st.spinner('이미지 압축 중...'):
                     compressed_image = compress_image(uploaded_file, quality)
                     
