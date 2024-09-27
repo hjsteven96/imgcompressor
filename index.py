@@ -22,12 +22,12 @@ def main():
     
     # 새로운 스타일의 타이틀
     st.markdown("""
-    <h1 style='text-align: center; font-size: 2.5em;'>
+    <h1 style='text-align: center; font-size: 2.5em; margin-bottom: 1.5em;'>
         <span style='color: black;'>무료 사진</span>
         <span style='color: #FF9B50;'>크기</span>
         <span style='color: #E15FED;'>조절하기</span>
     </h1>
-    <p style='text-align: center; font-size: 1.2em; color: #666;'>
+    <p style='text-align: center; font-size: 1.2em; color: #666; margin-bottom: 2em;'>
         쉽고 빠른 무료 온라인 사진 크기 조절기로 사진의 크기를 바꿀 수 있습니다.
     </p>
     """, unsafe_allow_html=True)
@@ -37,7 +37,7 @@ def main():
         uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
-        col_image, col_control = st.columns([2, 1])
+        col_image, col_spacing, col_control = st.columns([2, 0.1, 1])
 
         with col_image:
             original_image = Image.open(uploaded_file)
@@ -46,6 +46,7 @@ def main():
             image_container.image(preview_image, use_column_width=True, caption="이미지 미리보기")
 
         with col_control:
+            st.markdown("<div style='margin-top: 2em;'></div>", unsafe_allow_html=True)
             st.subheader("압축 설정")
             quality = st.slider("품질", 0, 100, 76, 1, format="%d%%")
 
@@ -79,11 +80,14 @@ def main():
                 st.write(f"압축 크기: {compressed_size / 1024:.2f} KB")
                 st.write(f"압축률: {(1 - compressed_size / original_size) * 100:.2f}%")
 
+                st.markdown("<div style='margin-top: 2em;'></div>", unsafe_allow_html=True)
                 st.download_button(
                     label="압축된 이미지 다운로드",
                     data=st.session_state.compressed_byte_arr.getvalue(),
                     file_name=f"compressed_{uploaded_file.name}",
-                    mime=f"image/{st.session_state.compressed_image.format.lower()}"
+                    mime=f"image/{st.session_state.compressed_image.format.lower()}",
+                    use_container_width=True,
+                    type="secondary"
                 )
 
             st.session_state.prev_quality = quality
