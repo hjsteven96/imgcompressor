@@ -1,6 +1,7 @@
 import streamlit as st
 from PIL import Image
 import io
+import math
 
 def compress_image(image, quality):
     img = Image.open(image)
@@ -17,6 +18,14 @@ def resize_image(image, max_width=400):
         return image.resize(new_size, Image.LANCZOS)
     return image
 
+def format_file_size(size_in_bytes):
+    if size_in_bytes >= 1024 * 1024:  # 1 MB 이상
+        size_in_mb = size_in_bytes / (1024 * 1024)
+        return f"{round(size_in_mb)} MB"
+    else:
+        size_in_kb = size_in_bytes / 1024
+        return f"{round(size_in_kb)} KB"
+
 def main():
     st.set_page_config(layout="wide")
     
@@ -24,11 +33,11 @@ def main():
     st.markdown("""
     <style>
     div.stButton > button:first-child {
-        background-color: #000000;  /* 검정색 */
+        background-color: #000000;
         color: white;
     }
     div.stButton > button:hover {
-        background-color: #333333;  /* 호버 시 약간 밝은 검정색 */
+        background-color: #333333;
         color: white;
     }
     </style>
@@ -90,9 +99,9 @@ def main():
                 original_size = st.session_state.original_size
                 compressed_size = st.session_state.compressed_size
 
-                st.write(f"원래 크기: {original_size / 1024:.2f} KB")
-                st.write(f"압축 크기: {compressed_size / 1024:.2f} KB")
-                st.write(f"압축률: {(1 - compressed_size / original_size) * 100:.2f}%")
+                st.write(f"원래 크기: {format_file_size(original_size)}")
+                st.write(f"압축 크기: {format_file_size(compressed_size)}")
+                st.write(f"압축률: {round((1 - compressed_size / original_size) * 100)}%")
 
                 st.markdown("<div style='margin-top: 2em;'></div>", unsafe_allow_html=True)
                 
