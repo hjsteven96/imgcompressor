@@ -1,7 +1,6 @@
 import streamlit as st
 from PIL import Image
 import io
-import time
 
 def compress_image(image, quality):
     img = Image.open(image)
@@ -10,6 +9,11 @@ def compress_image(image, quality):
     output.seek(0)
     return Image.open(output)
 
+def resize_image(image, scale_factor=0.5):
+    width, height = image.size
+    new_size = (int(width * scale_factor), int(height * scale_factor))
+    return image.resize(new_size, Image.LANCZOS)
+
 def main():
     st.set_page_config(layout="wide")
     st.title("이미지 압축기")
@@ -17,19 +21,17 @@ def main():
     uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
-        col1, col2 = st.columns([3, 1])
+        col1, col2 = st.columns([1, 1])  # 컬럼 비율을 1:1로 변경
 
         with col1:
-            image_placeholder = st.empty()
             original_image = Image.open(uploaded_file)
-            image_placeholder.image(original_image, use_column_width=True)
+            preview_image = resize_image(original_image)  # 이미지 크기를 절반으로 줄임
+            st.image(preview_image, use_column_width=True, caption="미리보기 (50% 크기)")
 
         with col2:
             st.subheader("압축 설정")
             quality = st.slider("품질", 0, 100, 76, 1, format="%d%%")
             
-            zoom = st.slider("확대/축소", 0.5, 2.0, 1.0, 0.1)
-
             if st.button("압축 적용"):
                 with st.spinner('이미지 압축 중...'):
                     compressed_image = compress_image(uploaded_file, quality)
@@ -40,12 +42,9 @@ def main():
                     compressed_image.save(compressed_byte_arr, format=compressed_image.format)
                     compressed_size = len(compressed_byte_arr.getvalue())
 
-                    # 이미지 확대/축소 적용
-                    width, height = compressed_image.size
-                    new_size = (int(width * zoom), int(height * zoom))
-                    resized_image = compressed_image.resize(new_size, Image.LANCZOS)
-
-                    image_placeholder.image(resized_image, use_column_width=True)
+                    # 압축된 이미지 미리보기 (50% 크기)
+                    preview_compressed = resize_image(compressed_image)
+                    st.image(preview_compressed, use_column_width=True, caption="압축된 이미지 미리보기 (50% 크기)")
 
                 st.success('압축 완료!')
 
