@@ -18,17 +18,21 @@ def main():
     st.set_page_config(layout="wide")
     st.title("이미지 압축기")
 
-    uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "jpeg", "png"])
+    # 이미지 첨부 영역을 가로 길이 절반으로 축소
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
-        col1, col2 = st.columns([1, 1])  # 컬럼 비율을 1:1로 변경
+        col_image, col_control = st.columns([2, 1])
 
-        with col1:
+        with col_image:
+            image_placeholder = st.empty()
             original_image = Image.open(uploaded_file)
-            preview_image = resize_image(original_image)  # 이미지 크기를 절반으로 줄임
-            st.image(preview_image, use_column_width=True, caption="미리보기 (50% 크기)")
+            preview_image = resize_image(original_image)
+            image_placeholder.image(preview_image, use_column_width=True, caption="원본 이미지 (50% 크기)")
 
-        with col2:
+        with col_control:
             st.subheader("압축 설정")
             quality = st.slider("품질", 0, 100, 76, 1, format="%d%%")
             
@@ -44,7 +48,7 @@ def main():
 
                     # 압축된 이미지 미리보기 (50% 크기)
                     preview_compressed = resize_image(compressed_image)
-                    st.image(preview_compressed, use_column_width=True, caption="압축된 이미지 미리보기 (50% 크기)")
+                    image_placeholder.image(preview_compressed, use_column_width=True, caption="압축된 이미지 (50% 크기)")
 
                 st.success('압축 완료!')
 
