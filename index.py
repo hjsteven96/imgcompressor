@@ -20,7 +20,21 @@ def resize_image(image, max_width=400):
 def main():
     st.set_page_config(layout="wide")
     
-    # 타이틀과 부제 사이 간격 더 축소
+    # 커스텀 CSS를 사용하여 버튼 스타일 변경
+    st.markdown("""
+    <style>
+    div.stButton > button:first-child {
+        background-color: #000000;  /* 검정색 */
+        color: white;
+    }
+    div.stButton > button:hover {
+        background-color: #333333;  /* 호버 시 약간 밝은 검정색 */
+        color: white;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # 타이틀과 부제
     st.markdown("""
     <h1 style='text-align: center; font-size: 2.5em; margin-bottom: 0;'>
         <span style='color: black;'>무료 사진</span>
@@ -82,14 +96,13 @@ def main():
 
                 st.markdown("<div style='margin-top: 2em;'></div>", unsafe_allow_html=True)
                 
-                # 다운로드 버튼 (Streamlit의 기본 스타일 사용)
+                # 다운로드 버튼
                 st.download_button(
                     label="압축된 이미지 다운로드",
                     data=st.session_state.compressed_byte_arr.getvalue(),
                     file_name=f"compressed_{uploaded_file.name}",
                     mime=f"image/{st.session_state.compressed_image.format.lower()}",
                     use_container_width=True,
-                    type="primary"  # primary 타입을 사용하여 강조된 스타일 적용
                 )
 
             st.session_state.prev_quality = quality
