@@ -16,11 +16,22 @@ def resize_image(image, scale_factor=0.5):
 
 def main():
     st.set_page_config(layout="wide")
-    st.title("이미지 압축기")
 
-    # 이미지 첨부 영역을 가로 길이 절반으로 축소
-    col1, col2 = st.columns([1, 1])
-    with col1:
+    # 타이틀 중앙 정렬을 위한 CSS
+    st.markdown("""
+        <style>
+        .title {
+            text-align: center;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+    # 중앙 정렬된 타이틀
+    st.markdown("<h1 class='title'>이미지 압축기</h1>", unsafe_allow_html=True)
+
+    # 이미지 첨부 영역을 중앙에 배치
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
         uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
