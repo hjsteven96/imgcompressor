@@ -1,7 +1,6 @@
 import streamlit as st
 from PIL import Image
 import io
-import math
 
 def compress_image(image, quality):
     img = Image.open(image)
@@ -19,12 +18,12 @@ def resize_image(image, max_width=400):
     return image
 
 def format_file_size(size_in_bytes):
-    if size_in_bytes >= 1024 * 1024:  # 1 MB 이상
-        size_in_mb = size_in_bytes / (1024 * 1024)
-        return f"{round(size_in_mb)} MB"
-    else:
+    if size_in_bytes < 1024 * 1024:  # 1MB 미만
         size_in_kb = size_in_bytes / 1024
         return f"{round(size_in_kb)} KB"
+    else:  # 1MB 이상
+        size_in_mb = size_in_bytes / (1024 * 1024)
+        return f"{size_in_mb:.2f} MB"
 
 def main():
     st.set_page_config(layout="wide")
@@ -101,7 +100,7 @@ def main():
 
                 st.write(f"원래 크기: {format_file_size(original_size)}")
                 st.write(f"압축 크기: {format_file_size(compressed_size)}")
-                st.write(f"압축률: {round((1 - compressed_size / original_size) * 100)}%")
+                st.write(f"압축률: {(1 - compressed_size / original_size) * 100:.2f}%")
 
                 st.markdown("<div style='margin-top: 2em;'></div>", unsafe_allow_html=True)
                 
