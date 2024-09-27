@@ -61,6 +61,10 @@ def main():
                     st.session_state.compressed_byte_arr = compressed_byte_arr
                     st.session_state.original_size = original_size
 
+                    # 압축된 이미지로 미리보기 업데이트
+                    preview_compressed = resize_image(compressed_image)
+                    image_container.image(preview_compressed, use_column_width=True, caption="압축된 이미지 미리보기")
+
             # 압축 결과 표시
             if 'compressed_size' in st.session_state:
                 original_size = st.session_state.original_size
@@ -80,11 +84,6 @@ def main():
 
             # 현재 품질을 이전 품질로 업데이트
             st.session_state.prev_quality = quality
-
-        # 압축된 이미지 미리보기 (원본 이미지 아래에 표시)
-        if 'compressed_image' in st.session_state:
-            preview_compressed = resize_image(st.session_state.compressed_image)
-            st.image(preview_compressed, use_column_width=True, caption="압축된 이미지 미리보기")
 
 if __name__ == "__main__":
     main()
