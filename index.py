@@ -17,7 +17,6 @@ def resize_image(image, scale_factor=0.5):
 def main():
     st.set_page_config(layout="wide")
 
-    # 타이틀 중앙 정렬을 위한 CSS
     st.markdown("""
         <style>
         .title {
@@ -26,10 +25,8 @@ def main():
         </style>
         """, unsafe_allow_html=True)
 
-    # 중앙 정렬된 타이틀
     st.markdown("<h1 class='title'>이미지 압축기</h1>", unsafe_allow_html=True)
 
-    # 이미지 첨부 영역을 중앙에 배치
     col1, col2, col3 = st.columns([1,2,1])
     with col2:
         uploaded_file = st.file_uploader("이미지 파일을 선택하세요", type=["jpg", "jpeg", "png"])
@@ -47,33 +44,31 @@ def main():
             st.subheader("압축 설정")
             quality = st.slider("품질", 0, 100, 76, 1, format="%d%%")
             
-            if st.button("압축 적용"):
-                with st.spinner('이미지 압축 중...'):
-                    compressed_image = compress_image(uploaded_file, quality)
-                    
-                    # 원본과 압축 후 파일 크기 비교
-                    original_size = uploaded_file.size
-                    compressed_byte_arr = io.BytesIO()
-                    compressed_image.save(compressed_byte_arr, format=compressed_image.format)
-                    compressed_size = len(compressed_byte_arr.getvalue())
+            # 압축 실행 및 결과 표시
+            with st.spinner('이미지 압축 중...'):
+                compressed_image = compress_image(uploaded_file, quality)
+                
+                # 원본과 압축 후 파일 크기 비교
+                original_size = uploaded_file.size
+                compressed_byte_arr = io.BytesIO()
+                compressed_image.save(compressed_byte_arr, format=compressed_image.format)
+                compressed_size = len(compressed_byte_arr.getvalue())
 
-                    # 압축된 이미지 미리보기 (50% 크기)
-                    preview_compressed = resize_image(compressed_image)
-                    image_placeholder.image(preview_compressed, use_column_width=True, caption="압축된 이미지 (50% 크기)")
+                # 압축된 이미지 미리보기 (50% 크기)
+                preview_compressed = resize_image(compressed_image)
+                image_placeholder.image(preview_compressed, use_column_width=True, caption="압축된 이미지 (50% 크기)")
 
-                st.success('압축 완료!')
+            st.write(f"원래 크기: {original_size / 1024:.2f} KB")
+            st.write(f"압축 크기: {compressed_size / 1024:.2f} KB")
+            st.write(f"압축률: {(1 - compressed_size / original_size) * 100:.2f}%")
 
-                st.write(f"원래 크기: {original_size / 1024:.2f} KB")
-                st.write(f"압축 크기: {compressed_size / 1024:.2f} KB")
-                st.write(f"압축률: {(1 - compressed_size / original_size) * 100:.2f}%")
-
-                # 다운로드 버튼
-                st.download_button(
-                    label="압축된 이미지 다운로드",
-                    data=compressed_byte_arr.getvalue(),
-                    file_name=f"compressed_{uploaded_file.name}",
-                    mime=f"image/{compressed_image.format.lower()}"
-                )
+            # 다운로드 버튼
+            st.download_button(
+                label="압축된 이미지 다운로드",
+                data=compressed_byte_arr.getvalue(),
+                file_name=f"compressed_{uploaded_file.name}",
+                mime=f"image/{compressed_image.format.lower()}"
+            )
 
 if __name__ == "__main__":
     main()
