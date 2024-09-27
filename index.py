@@ -82,21 +82,14 @@ def main():
 
                 st.markdown("<div style='margin-top: 2em;'></div>", unsafe_allow_html=True)
                 
-                # 다운로드 버튼 스타일 적용
-                st.markdown("""
-                <style>
-                div.stButton > button:first-child {
-                    background-color: #000000;
-                    color: white;
-                }
-                </style>""", unsafe_allow_html=True)
-                
+                # 다운로드 버튼 (Streamlit의 기본 스타일 사용)
                 st.download_button(
                     label="압축된 이미지 다운로드",
                     data=st.session_state.compressed_byte_arr.getvalue(),
                     file_name=f"compressed_{uploaded_file.name}",
                     mime=f"image/{st.session_state.compressed_image.format.lower()}",
                     use_container_width=True,
+                    type="primary"  # primary 타입을 사용하여 강조된 스타일 적용
                 )
 
             st.session_state.prev_quality = quality
